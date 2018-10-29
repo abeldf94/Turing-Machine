@@ -34,7 +34,7 @@ public class Transition {
 	 * @param outputSymbol the output symbol
 	 * @param move the move
 	 */
-	public Transition(State currentState, State nextState, String entrySymbol, String outputSymbol, String move) {
+	public Transition(State currentState, String entrySymbol, State nextState, String outputSymbol, String move) {
 		super();
 		this.currentState = currentState;
 		this.nextState = nextState;
@@ -43,6 +43,14 @@ public class Transition {
 		this.move = move;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return currentState.getId() + " " + entrySymbol + " " + nextState.getId() + " " + outputSymbol + " " + move;
+	}
+
 	/** Getters and Setters **/
 
 	public State getCurrentState() {

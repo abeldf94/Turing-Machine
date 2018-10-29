@@ -29,6 +29,22 @@ public class State {
 		this.id = id;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object other) {
+		if (other == null)
+			return false;
+		if (other == this)
+			return true;
+		if (!(other instanceof State))
+			return false;
+
+		State otherState = (State) other;
+		return this.getId().equals(otherState.getId());
+	}
+	
 	/** Getters and Setters **/
 
 	public String getId() {

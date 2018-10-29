@@ -1,5 +1,7 @@
 package es.ull.etsii.cc.main;
 
+import java.io.File;
+
 import es.ull.etsii.cc.machine.TuringMachine;
 
 /**
@@ -19,8 +21,8 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		try {
-			TuringMachine machine = new TuringMachine();
-			// TODO: machine.compute();
+			TuringMachine machine = new TuringMachine(new File(args[0]));
+			machine.computeInput();
 		} catch(Exception error) {
 			System.err.println(error.getMessage());
 			error.printStackTrace();
