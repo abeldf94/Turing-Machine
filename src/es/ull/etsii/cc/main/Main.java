@@ -16,10 +16,11 @@ import es.ull.etsii.cc.machine.TuringMachine;
  */
 public class Main {
 	
-	public final static  Integer SHOW_MACHINE = 1;
+	private static final Integer SHOW_MACHINE = 1;
 	private final static Integer SHOW_TAPE = 2;
-	private final static Integer COMPUTE = 3;
-	private final static Integer EXIT = 4;
+	private final static Integer UPDATE_INPUT_TAPE = 3;
+	private final static Integer COMPUTE = 4;
+	private final static Integer EXIT = 5;
 	
 	/**
 	 * The main method.
@@ -35,31 +36,41 @@ public class Main {
 			Integer option = -1;
 			
 			while (option != EXIT) {
-				
-				// TODO: show menu in console and read from console the option selected.
 				// Simple menu system
+				System.out.println();
 				System.out.println("--------- Turing machine ---------");
-				System.out.println("   1. Mostrar Maquina de Turing.");
-				System.out.println("   2. Mostrar cinta de la Maquina.");
-				System.out.println("   3. Analizar cadena de la cinta.");
-				System.out.println("   4. Salir.");
-				System.out.print("   Elige una opcion: ");
+				System.out.println("   1. Show Turing machine.");
+				System.out.println("   2. Show input tape content.");
+				System.out.println("   3. Update tape with a new input.");
+				System.out.println("   4. Compute the tape chain.");
+				System.out.println("   5. Exit.");
+				System.out.print("   Choose an option: ");
+				
 				// Read input from console
-				option = Integer.parseInt(reader.readLine());
-								
-				// If-else statements (switch-case don't accept constants as cases)
+				try {
+					option = Integer.parseInt(reader.readLine());
+				} catch (NumberFormatException error) {
+					System.err.println("Error: bad input received, please insert a valid option.");
+					option = -1;
+				}
+				
+				System.out.println();
+
+				// If-else statements (switch-case don't accept variables as cases in java)
 				if (option == SHOW_MACHINE)
 					machine.writeMachine();
 				else if (option == SHOW_TAPE)
-					machine.writeMachine();
+					System.out.println("Write tape function");
+				else if (option == UPDATE_INPUT_TAPE)
+					System.out.println("Update tape function");
 				else if (option == COMPUTE)
 					machine.computeInput();
 				else if (option == EXIT)
 					System.out.println("Shutting down..");
-				else
-					throw new Exception("invalid option inserted.");	
-				}
-			
+				// If it's not -1, means that the user insert a number but not a correct number
+				else if (option != -1) 
+					System.out.println("Warning: insert a valid option.");
+			}
 		} catch(Exception error) {
 			System.err.println(error.getMessage());
 			error.printStackTrace();

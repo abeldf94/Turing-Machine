@@ -165,10 +165,6 @@ public class TuringMachine {
 		if (!checkTransitions()) 
 			throw new Exception("transitions are incorrectly."); 
 		
-		// Check machine data
-		//writeMachine();
-		
-		System.out.println("Turing machine loaded.");
 	}
 
 	/**
