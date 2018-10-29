@@ -37,10 +37,19 @@ public class TuringMachine {
 	/** The set of states. */
 	private List<State> setOfStates;
 
+	/** The input alphabet. */
 	private Alphabet inputAlphabet;
+	
+	/** The tape alphabet. */
 	private Alphabet tapeAlphabet;
+	
+	/** The initial state. */
 	private State initialState;
+	
+	/** The set of transitions. */
 	private List<Transition> setOfTransitions;
+	
+	/** The accepted states. */
 	private List<State> acceptedStates;
 
 	/**
@@ -104,6 +113,7 @@ public class TuringMachine {
 		line = reader.readLine();
 		tokens = line.split("#")[0].split("\\s+");
 
+		// Set initial state
 		setInitialState(new State(tokens[0]));
 
 		// Check initial state is correct
@@ -116,9 +126,10 @@ public class TuringMachine {
 		line = reader.readLine();
 		tokens = line.split("#")[0].split("\\s+");
 
+		// Set the white symbol
 		setWhite(tokens[0]);
 
-		// Check initial stack symbol are correctly
+		// Check white symbol is correct
 		if (!checkWhiteSymbol()) { 
 			reader.close(); 
 			throw new Exception("white symbol not belongs to the tape alphabet."); 
@@ -128,9 +139,11 @@ public class TuringMachine {
 		line = reader.readLine();
 		tokens = line.split("#")[0].split("\\s+");
 
+		// Read accepted states and create it
 		for (String i : tokens)
 			acceptedStates.add(new State(i));
 		
+		// Check that accepted states is included in the set of states
 		if (!checkAcceptedStates()) {
 			reader.close();
 			throw new Exception("set of accepted states is incorrectly.");
@@ -139,7 +152,8 @@ public class TuringMachine {
 		// Read transitions and create it
 		while ((line = reader.readLine()) != null) {
 			tokens = line.split("#")[0].split("\\s+");
-
+			
+			// Current state, entry symbol, next state, output symbol and movement
 			Transition transition = new Transition(new State(tokens[0]), tokens[1], new State(tokens[2]), tokens[3],
 					tokens[4]);
 			setOfTransitions.add(transition);
@@ -151,13 +165,17 @@ public class TuringMachine {
 		if (!checkTransitions()) 
 			throw new Exception("transitions are incorrectly."); 
 		
+		// Check machine data
+		//writeMachine();
 		
-
-		writeMachine();
+		System.out.println("Turing machine loaded.");
 	}
 
+	/**
+	 * Compute input and determine if it's accepted for the language.
+	 */
 	public void computeInput() {
-
+		System.out.println("Computing, not algorithm implemented.");
 	}
 
 	/**
