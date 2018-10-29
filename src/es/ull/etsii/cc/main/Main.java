@@ -16,10 +16,19 @@ import es.ull.etsii.cc.machine.TuringMachine;
  */
 public class Main {
 	
-	private static final Integer SHOW_MACHINE = 1;
+	/** The Constant SHOW_MACHINE. */
+	private final static Integer SHOW_MACHINE = 1;
+	
+	/** The Constant SHOW_TAPE. */
 	private final static Integer SHOW_TAPE = 2;
+	
+	/** The Constant UPDATE_INPUT_TAPE. */
 	private final static Integer UPDATE_INPUT_TAPE = 3;
+	
+	/** The Constant COMPUTE. */
 	private final static Integer COMPUTE = 4;
+	
+	/** The Constant EXIT. */
 	private final static Integer EXIT = 5;
 	
 	/**
