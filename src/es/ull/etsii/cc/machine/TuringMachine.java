@@ -4,11 +4,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import es.ull.etsii.cc.components.Alphabet;
 import es.ull.etsii.cc.components.State;
+import es.ull.etsii.cc.components.Tape;
 import es.ull.etsii.cc.components.Transition;
 
 /**
@@ -39,22 +41,26 @@ public class TuringMachine {
 
 	/** The input alphabet. */
 	private Alphabet inputAlphabet;
-	
+
 	/** The tape alphabet. */
 	private Alphabet tapeAlphabet;
-	
+
 	/** The initial state. */
 	private State initialState;
-	
+
 	/** The set of transitions. */
 	private List<Transition> setOfTransitions;
-	
+
 	/** The accepted states. */
 	private List<State> acceptedStates;
 
+	/** The input tape. */
+	private Tape inputTape;
+
 	/**
 	 * Instantiates a new Turing machine.
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	public TuringMachine(File inputFile) throws Exception {
 		setOfStates = new ArrayList<>();
@@ -63,6 +69,7 @@ public class TuringMachine {
 		initialState = new State();
 		setOfTransitions = new ArrayList<>();
 		acceptedStates = new ArrayList<>();
+		inputTape = new Tape();
 		white = new String();
 		loadFile(inputFile);
 	}
@@ -130,9 +137,9 @@ public class TuringMachine {
 		setWhite(tokens[0]);
 
 		// Check white symbol is correct
-		if (!checkWhiteSymbol()) { 
-			reader.close(); 
-			throw new Exception("white symbol not belongs to the tape alphabet."); 
+		if (!checkWhiteSymbol()) {
+			reader.close();
+			throw new Exception("white symbol not belongs to the tape alphabet.");
 		}
 
 		// Read accepted states
@@ -142,7 +149,7 @@ public class TuringMachine {
 		// Read accepted states and create it
 		for (String i : tokens)
 			acceptedStates.add(new State(i));
-		
+
 		// Check that accepted states is included in the set of states
 		if (!checkAcceptedStates()) {
 			reader.close();
@@ -152,7 +159,7 @@ public class TuringMachine {
 		// Read transitions and create it
 		while ((line = reader.readLine()) != null) {
 			tokens = line.split("#")[0].split("\\s+");
-			
+
 			// Current state, entry symbol, next state, output symbol and movement
 			Transition transition = new Transition(new State(tokens[0]), tokens[1], new State(tokens[2]), tokens[3],
 					tokens[4]);
@@ -162,16 +169,52 @@ public class TuringMachine {
 		reader.close();
 
 		// Check transitions are correctly
-		if (!checkTransitions()) 
-			throw new Exception("transitions are incorrectly."); 
-		
+		if (!checkTransitions())
+			throw new Exception("transitions are incorrectly.");
+
+	}
+
+	/**
+	 * Configure a new tape loading it from console user input.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public void configureTape() throws IOException {
+
+		if (inputTape == null) // Check it's not null
+			throw new NullPointerException("tape is null");
+
+		inputTape.reset(); // Reset input always
+
+		System.out.print("Add a new tape: ");
+		// Read input from console
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		String input = reader.readLine();
+
+		// Insert each character from string into the list
+		for (int i = 1; i <= input.length(); i++) {
+			inputTape.getInput().add(input.substring(i - 1, i));
+		}
+
+		// it add the white symbol at the begin and the end.
+		inputTape.getInput().add(0, white);
+		inputTape.getInput().add(inputTape.getInput().size(), white);
+
+		if (!input.isEmpty())
+			System.out.println("Loaded tape: " + inputTape);
+		else
+			System.out.println(inputTape);
 	}
 
 	/**
 	 * Compute input and determine if it's accepted for the language.
 	 */
 	public void computeInput() {
-		System.out.println("Computing, not algorithm implemented.");
+		if (inputTape == null)
+			throw new NullPointerException("tape is null");
+
+		// TODO: implement algorithm
+
 	}
 
 	/**
@@ -227,7 +270,7 @@ public class TuringMachine {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Check the accepted states belongs to the set of states.
 	 *
@@ -252,7 +295,8 @@ public class TuringMachine {
 				return false;
 			else if (!checkSymbol(i.getOutputSymbol()))
 				return false;
-			else if (!i.getMove().equals(getRIGHT()) && !i.getMove().equals(getLEFT()) && !i.getMove().equals(getSTOP())) 
+			else if (!i.getMove().equals(getRIGHT()) && !i.getMove().equals(getLEFT())
+					&& !i.getMove().equals(getSTOP()))
 				return false;
 		}
 		return true;
@@ -363,6 +407,14 @@ public class TuringMachine {
 
 	public void setAcceptedStates(List<State> acceptedStates) {
 		this.acceptedStates = acceptedStates;
+	}
+
+	public Tape getInputTape() {
+		return inputTape;
+	}
+
+	public void setInputTape(Tape inputTape) {
+		this.inputTape = inputTape;
 	}
 
 }

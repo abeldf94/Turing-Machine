@@ -4,24 +4,24 @@ import java.util.LinkedHashSet;
 
 /**
  * @author Abel Delgado Falcón (<a href="mailto:alu0100792218@ull.edu.es">)
- * @version 1.0 
+ * @version 1.0
  * @date 28 oct. 2018
  * 
- * Generic class for the Turing Machine alphabet (Input and tape).
+ *       Generic class for the Turing Machine alphabet (Input and tape).
  *
  */
 public class Alphabet {
-	
+
 	/** The elements. */
 	private LinkedHashSet<String> elements;
-	
+
 	/**
 	 * Instantiates a new alphabet.
 	 */
 	public Alphabet() {
 		elements = new LinkedHashSet<>();
 	}
-	
+
 	/**
 	 * Adds a element to the alphabet.
 	 *
@@ -32,7 +32,7 @@ public class Alphabet {
 	}
 
 	/** Getters and Setters **/
-	
+
 	public LinkedHashSet<String> getElements() {
 		return elements;
 	}

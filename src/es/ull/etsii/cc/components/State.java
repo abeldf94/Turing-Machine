@@ -2,14 +2,14 @@ package es.ull.etsii.cc.components;
 
 /**
  * @author Abel Delgado Falcón (<a href="mailto:alu0100792218@ull.edu.es">)
- * @version 1.0 
+ * @version 1.0
  * @date 28 oct. 2018
  * 
- * State representation for the Turing machine transitions.
+ *       State representation for the Turing machine transitions.
  *
  */
 public class State {
-	
+
 	/** The id. */
 	private String id;
 
@@ -28,8 +28,10 @@ public class State {
 	public State(String id) {
 		this.id = id;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -44,7 +46,7 @@ public class State {
 		State otherState = (State) other;
 		return this.getId().equals(otherState.getId());
 	}
-	
+
 	/** Getters and Setters **/
 
 	public String getId() {

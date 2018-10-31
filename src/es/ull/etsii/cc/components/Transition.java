@@ -2,29 +2,29 @@ package es.ull.etsii.cc.components;
 
 /**
  * @author Abel Delgado Falcón (<a href="mailto:alu0100792218@ull.edu.es">)
- * @version 1.0 
+ * @version 1.0
  * @date 28 oct. 2018
  * 
- * Transition representation for the Turing machine.
+ *       Transition representation for the Turing machine.
  *
  */
 public class Transition {
-	
+
 	/** The current state. */
 	private State currentState;
-	
+
 	/** The next state. */
 	private State nextState;
-	
+
 	/** The entry symbol. */
 	private String entrySymbol;
-	
+
 	/** The output symbol. */
 	private String outputSymbol;
-	
+
 	/** The move. */
 	private String move;
-	
+
 	/**
 	 * Instantiates a new transition.
 	 *
@@ -42,8 +42,10 @@ public class Transition {
 		this.outputSymbol = outputSymbol;
 		this.move = move;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -92,5 +94,5 @@ public class Transition {
 	public void setMove(String move) {
 		this.move = move;
 	}
-	
+
 }
