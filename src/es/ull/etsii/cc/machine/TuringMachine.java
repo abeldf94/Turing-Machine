@@ -1,10 +1,5 @@
 package es.ull.etsii.cc.machine;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +57,7 @@ public class TuringMachine {
 	 * 
 	 * @throws Exception
 	 */
-	public TuringMachine(File inputFile) throws Exception {
+	public TuringMachine() throws Exception {
 		setOfStates = new ArrayList<>();
 		inputAlphabet = new Alphabet();
 		tapeAlphabet = new Alphabet();
@@ -71,139 +66,6 @@ public class TuringMachine {
 		acceptedStates = new ArrayList<>();
 		inputTape = new Tape();
 		white = new String();
-		loadFile(inputFile);
-	}
-
-	/**
-	 * Load the Turing machine from file.
-	 *
-	 * @param file the file
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private void loadFile(File file) throws Exception {
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-
-		String line = reader.readLine();
-		String[] tokens = line.split("\\s+");
-
-		// Skip first lines if they are comments
-		while (tokens[0].equals("#")) {
-			line = reader.readLine();
-			tokens = line.split("\\s+");
-		}
-
-		tokens = line.split("#")[0].split("\\s+"); // Ignore comments in line
-
-		// Here come the set of states so we create it
-		for (String i : tokens) {
-			State state = new State(i);
-			setOfStates.add(state);
-		}
-
-		// Read input alphabet and ignore comments
-		line = reader.readLine();
-		tokens = line.split("#")[0].split("\\s+");
-
-		// Create input alphabet
-		for (String i : tokens)
-			inputAlphabet.addElement(i);
-
-		// Read tape alphabet and ignore comments
-		line = reader.readLine();
-		tokens = line.split("#")[0].split("\\s+");
-
-		// Create tape alphabet
-		for (String i : tokens)
-			tapeAlphabet.addElement(i);
-
-		// Read initial state
-		line = reader.readLine();
-		tokens = line.split("#")[0].split("\\s+");
-
-		// Set initial state
-		setInitialState(new State(tokens[0]));
-
-		// Check initial state is correct
-		if (!checkInitialState()) {
-			reader.close();
-			throw new Exception("initial state not belongs to the set of states.");
-		}
-
-		// Read white symbol
-		line = reader.readLine();
-		tokens = line.split("#")[0].split("\\s+");
-
-		// Set the white symbol
-		setWhite(tokens[0]);
-
-		// Check white symbol is correct
-		if (!checkWhiteSymbol()) {
-			reader.close();
-			throw new Exception("white symbol not belongs to the tape alphabet.");
-		}
-
-		// Read accepted states
-		line = reader.readLine();
-		tokens = line.split("#")[0].split("\\s+");
-
-		// Read accepted states and create it
-		for (String i : tokens)
-			acceptedStates.add(new State(i));
-
-		// Check that accepted states is included in the set of states
-		if (!checkAcceptedStates()) {
-			reader.close();
-			throw new Exception("set of accepted states is incorrectly.");
-		}
-
-		// Read transitions and create it
-		while ((line = reader.readLine()) != null) {
-			tokens = line.split("#")[0].split("\\s+");
-
-			// Current state, entry symbol, next state, output symbol and movement
-			Transition transition = new Transition(new State(tokens[0]), tokens[1], new State(tokens[2]), tokens[3],
-					tokens[4]);
-			setOfTransitions.add(transition);
-		}
-
-		reader.close();
-
-		// Check transitions are correctly
-		if (!checkTransitions())
-			throw new Exception("transitions are incorrectly.");
-
-	}
-
-	/**
-	 * Configure a new tape loading it from console user input.
-	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public void configureTape() throws IOException {
-
-		if (inputTape == null) // Check it's not null
-			throw new NullPointerException("tape is null");
-
-		inputTape.reset(); // Reset input always
-
-		System.out.print("Add a new tape: ");
-		// Read input from console
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		String input = reader.readLine();
-
-		// Insert each character from string into the list
-		for (int i = 1; i <= input.length(); i++) {
-			inputTape.getInput().add(input.substring(i - 1, i));
-		}
-
-		// it add the white symbol at the begin and the end.
-		inputTape.getInput().add(0, white);
-		inputTape.getInput().add(inputTape.getInput().size(), white);
-
-		if (!input.isEmpty())
-			System.out.println("Loaded tape: " + inputTape);
-		else
-			System.out.println(inputTape);
 	}
 
 	/**
@@ -218,123 +80,38 @@ public class TuringMachine {
 	}
 
 	/**
-	 * Check initial state.
-	 *
-	 * @return the boolean
-	 */
-	public Boolean checkInitialState() {
-		for (State i : getSetOfStates()) {
-			if (i.getId().equals(getInitialState().getId()))
-				return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Check white symbol.
-	 *
-	 * @return the boolean
-	 */
-	public Boolean checkWhiteSymbol() {
-		for (String i : getTapeAlphabet().getElements()) {
-			if (i.equals(getWhite()))
-				return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Check transition state belong to set of states.
-	 *
-	 * @param state the state
-	 * @return the boolean
-	 */
-	public Boolean checkState(State state) {
-		for (State i : getSetOfStates()) {
-			if (i.getId().equals(state.getId()))
-				return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Check symbol belongs input alphabet.
-	 *
-	 * @param element the element
-	 * @return the boolean
-	 */
-	public Boolean checkSymbol(String element) {
-		for (String i : getTapeAlphabet().getElements()) {
-			if (i.equals(element))
-				return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Check the accepted states belongs to the set of states.
-	 *
-	 * @return the boolean
-	 */
-	public Boolean checkAcceptedStates() {
-		return getSetOfStates().containsAll(getAcceptedStates());
-	}
-
-	/**
-	 * Check all the transitions.
-	 *
-	 * @return the boolean
-	 */
-	public Boolean checkTransitions() {
-		for (Transition i : getSetOfTransitions()) {
-			if (!checkState(i.getCurrentState()))
-				return false;
-			else if (!checkState(i.getNextState()))
-				return false;
-			else if (!checkSymbol(i.getEntrySymbol()))
-				return false;
-			else if (!checkSymbol(i.getOutputSymbol()))
-				return false;
-			else if (!i.getMove().equals(getRIGHT()) && !i.getMove().equals(getLEFT())
-					&& !i.getMove().equals(getSTOP()))
-				return false;
-		}
-		return true;
-	}
-
-	/**
 	 * Write Turing machine content.
 	 */
 	public void writeMachine() {
-		System.out.print("Printing states Q: ");
+		System.out.print("States Q: ");
 		for (State i : getSetOfStates())
 			System.out.print(i.getId() + " ");
 
 		System.out.println();
 
-		System.out.print("Printing input alphabet E: ");
+		System.out.print("Input alphabet E: ");
 		for (String i : getInputAlphabet().getElements())
 			System.out.print(i + " ");
 
 		System.out.println();
 
-		System.out.print("Printing tape alphabet P: ");
+		System.out.print("Tape alphabet P: ");
 		for (String i : getTapeAlphabet().getElements())
 			System.out.print(i + " ");
 
 		System.out.println();
 
-		System.out.println("Printing initial state s: " + getInitialState().getId());
+		System.out.println("Initial state s: " + getInitialState().getId());
 
-		System.out.println("Printing white symbol b: " + getWhite());
+		System.out.println("White symbol b: " + getWhite());
 
-		System.out.print("Printing accepted states F: ");
+		System.out.print("Accepted states F: ");
 		for (State i : getAcceptedStates())
 			System.out.print(i.getId() + " ");
 
 		System.out.println();
 
-		System.out.println("Printing transitions d: ");
+		System.out.println("Transitions d: ");
 		for (Transition i : getSetOfTransitions())
 			System.out.println(i.toString());
 	}

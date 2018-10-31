@@ -1,5 +1,8 @@
 package es.ull.etsii.cc.components;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,29 +16,45 @@ import java.util.List;
 public class Tape {
 
 	/** The input. */
-	List<String> input;
+	List<String> tape;
 
 	/**
 	 * Instantiates a new tape.
 	 */
 	public Tape() {
-		input = new LinkedList<>();
+		tape = new LinkedList<>();
 	}
 
 	/**
-	 * Checks if is empty.
+	 * Configure a new tape loading it from console user input.
 	 *
-	 * @return the boolean
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public Boolean isEmpty() {
-		return input.isEmpty();
-	}
+	public void configureTape(String white) throws IOException {
 
-	/**
-	 * Reset input.
-	 */
-	public void reset() {
-		input.clear();
+		if (tape == null) // Check it's not null
+			throw new NullPointerException("tape is null");
+
+		tape.clear(); // Clear input list always
+
+		System.out.print("Add a new tape: ");
+		// Read input from console
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		String input = reader.readLine();
+
+		// Insert each character from string into the list
+		for (int i = 1; i <= input.length(); i++) {
+			tape.add(input.substring(i - 1, i));
+		}
+
+		// it add the white symbol at the begin and the end.
+		tape.add(0, white);
+		tape.add(tape.size(), white);
+
+		if (!input.isEmpty())
+			System.out.println("Loaded tape: " + toString());
+		else
+			System.out.println(toString());
 	}
 
 	/*
@@ -45,15 +64,15 @@ public class Tape {
 	 */
 	@Override
 	public String toString() {
-		if (input.size() == 0)
+		if (tape.size() == 0)
 			return "Tape is empty right now.";
 
 		String list = "[ ";
-		for (int i = 0; i < input.size(); i++) {
-			if (i == input.size() - 1) // If it's last position
-				list += input.get(i) + " ";
+		for (int i = 0; i < tape.size(); i++) {
+			if (i == tape.size() - 1) // If it's last position
+				list += tape.get(i) + " ";
 			else
-				list += input.get(i) + " | ";
+				list += tape.get(i) + " | ";
 		}
 		list += "]";
 
@@ -63,10 +82,10 @@ public class Tape {
 	/** Getters and Setters **/
 
 	public List<String> getInput() {
-		return input;
+		return tape;
 	}
 
-	public void setInput(List<String> input) {
-		this.input = input;
+	public void setInput(List<String> tape) {
+		this.tape = tape;
 	}
 }

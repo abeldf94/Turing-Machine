@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 
+import es.ull.etsii.cc.components.TMFileLoader;
 import es.ull.etsii.cc.machine.TuringMachine;
 
 /**
@@ -54,7 +55,9 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		try {
-			TuringMachine machine = new TuringMachine(new File(args[0]));
+			TuringMachine machine = new TuringMachine();
+			TMFileLoader loader = new TMFileLoader(machine, new File(args[0]));
+			loader.read();
 
 			// Reader for console input
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -80,7 +83,7 @@ public class Main {
 				else if (option == SHOW_TAPE)
 					System.out.println(machine.getInputTape());
 				else if (option == UPDATE_INPUT_TAPE)
-					machine.configureTape();
+					machine.getInputTape().configureTape(machine.getWhite());
 				else if (option == COMPUTE)
 					machine.computeInput();
 				else if (option == EXIT)
