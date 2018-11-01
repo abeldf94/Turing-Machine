@@ -91,9 +91,9 @@ public final class TMCheck {
 				return false;
 			else if (!checkState(machine.getSetOfStates(), i.getNextState()))
 				return false;
-			else if (!checkSymbol(machine.getTapeAlphabet(), i.getEntrySymbol()))
+			else if (!checkSymbol(machine.getTapeAlphabet(), i.getReadSymbol()))
 				return false;
-			else if (!checkSymbol(machine.getTapeAlphabet(), i.getOutputSymbol()))
+			else if (!checkSymbol(machine.getTapeAlphabet(), i.getWriteSymbol()))
 				return false;
 			else if (!i.getMove().equals(machine.getRIGHT()) && !i.getMove().equals(machine.getLEFT())
 					&& !i.getMove().equals(machine.getSTOP()))

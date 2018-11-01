@@ -37,7 +37,6 @@ public class Main {
 	 * Shows the program menu.
 	 */
 	private static void showMenu() {
-		System.out.println();
 		System.out.println("--------- Turing machine ---------");
 		System.out.println("   1. Show Turing machine.");
 		System.out.println("   2. Show input tape content.");

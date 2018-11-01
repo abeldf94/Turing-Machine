@@ -1,5 +1,8 @@
 package es.ull.etsii.cc.machine;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +30,9 @@ public class TuringMachine {
 
 	/** The stop movement. */
 	private final String STOP = "S";
+	
+	/** The iteration loop limit. */
+	private final Integer ITERATION_LOOP_LIMIT = 1000;
 
 	/** The white symbol. */
 	private String white;
@@ -54,8 +60,8 @@ public class TuringMachine {
 
 	/**
 	 * Instantiates a new Turing machine.
-	 * 
-	 * @throws Exception
+	 *
+	 * @throws Exception the exception
 	 */
 	public TuringMachine() throws Exception {
 		setOfStates = new ArrayList<>();
@@ -70,50 +76,181 @@ public class TuringMachine {
 
 	/**
 	 * Compute input and determine if it's accepted for the language.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public void computeInput() {
-		if (inputTape == null)
-			throw new NullPointerException("tape is null");
+	public void computeInput() throws IOException {
+		//TODO: test algorithm with more inputs and with different machines
+		//TODO: test that write tape function is correctly working when head is in borders
+		
+		// It won't comput if there is no input.
+		if (inputTape == null || inputTape.getInput().isEmpty()) {
+			System.out.println("You must define an input first");
+			return;
+		}
 
-		// TODO: implement algorithm
-
+		List<String> tape = inputTape.getInput();
+		
+		// Starts at index = 2 because index = 0 is for white symbol
+		// If input tape has [ 1 0 1 0 ], it will have [ . . 1 0 1 0 . . ]
+		Integer head = 2; 
+		State currentState = initialState;
+		String move = ""; // Move for the head 
+		Integer iteration = 0;
+		Integer globalIteration = 1;
+		
+		printTapeStatus(globalIteration, head);
+		
+		// Keep loop until the current move is 'stop' 
+		//or the current state is not an accepted state
+		while(!acceptedStates.contains(currentState) && !move.equals(STOP)) {			
+			
+			// Current symbol
+			String symbol = tape.get(head);
+			// Check if there are transitions for this state and this symbol
+			Transition next = findTransition(currentState, symbol);
+			
+			if (next != null) { // If there is a transition
+				currentState = next.getNextState(); // Update state
+				move = next.getMove(); // Update head move
+				// Just overwrite symbol if it's different
+				if (!tape.get(head).equals(next.getWriteSymbol()))
+					tape.set(head, next.getWriteSymbol());
+					
+			} else // If there are not transitions, stop 
+				move = STOP;
+			
+			// Move head depending on the transition move
+			if (move.equals(LEFT))
+				head--;
+			else if (move.equals(RIGHT))
+				head++;
+			
+			
+			// "Infinite" tape, if it is in the borders of the list,
+			// it add a new white symbol.
+			if (head == tape.size()) 
+				tape.add(tape.size(), white);
+			else if (head == 0){
+				tape.add(0, white);
+				head++; // If a white is added at begin, head need to move to keep position
+			}
+			
+			// Prevents the machine from falling in infinite loop
+			if (iteration >= ITERATION_LOOP_LIMIT) {
+				System.out.println("Warning: Turing machine it's iterating without find a solution.");
+				System.out.println("If you want keep trying, insert 'continue'");
+				System.out.println("If you want to stop machine, insert 'stop'.");
+				System.out.print("Input: ");
+				
+				// Read user input decision
+				BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+				String userInput = "";
+				do {
+					userInput = reader.readLine();
+					if (!userInput.equals("continue") || !userInput.equals("stop"))
+						System.out.print("Error: bad option.\nPlease follow the instructions and try again: ");
+					
+				} while (!userInput.equals("continue") || !userInput.equals("stop"));
+				
+				if (userInput.equals("continue"))
+					iteration = 0;
+				else if (userInput.equals("stop"))
+					move = STOP;
+			}
+			
+			iteration++;
+			globalIteration++;
+			
+			printTapeStatus(globalIteration, head);
+			
+		}
+		
+		if (acceptedStates.contains(currentState))
+			System.out.println("Input is accepted.");
+		else
+			System.out.println("Input is not accepted.");
+	}
+	
+	/**
+	 * Find transition if there is one available.
+	 *
+	 * @param currentState the current state
+	 * @param symbol the symbol
+	 * @return the transition
+	 */
+	private Transition findTransition(State currentState, String symbol) {
+		for (Transition i : setOfTransitions)
+			if (i.getReadSymbol().equals(symbol) && i.getCurrentState().equals(currentState))
+				return i;
+		
+		return null;
+	}
+	
+	/**
+	 * Prints the tape status with head.
+	 *
+	 * @param global the global
+	 * @param head the head
+	 */
+	private void printTapeStatus(Integer global, Integer head) {
+		List<String> tape = inputTape.getInput();
+		
+		System.out.println("Iteration: " + global);
+		String list = "";
+		for (int i = 0; i < tape.size(); i++) {
+			if (i == tape.size() - 1) // If it's last position
+				list += tape.get(i) + " ";
+			else
+				list += tape.get(i) + " | ";
+		}
+		System.out.println(list);
+		
+		String writeHead = "";
+		for (int i = 0; i < tape.size(); i++) {
+			if (i == head)
+				writeHead += "^";
+			else if (i == 0)
+				writeHead += "    ";
+			else
+				writeHead += "    ";
+		}
+		System.out.println(writeHead);
+		System.out.println(head);
 	}
 
 	/**
 	 * Write Turing machine content.
 	 */
 	public void writeMachine() {
-		System.out.print("States Q: ");
-		for (State i : getSetOfStates())
-			System.out.print(i.getId() + " ");
+		try {
+			System.out.print("States Q: ");
+			for (State i : getSetOfStates())
+				System.out.print(i.getId() + " ");
 
-		System.out.println();
+			System.out.print("\nInput alphabet E: ");
+			for (String i : getInputAlphabet().getElements())
+				System.out.print(i + " ");
 
-		System.out.print("Input alphabet E: ");
-		for (String i : getInputAlphabet().getElements())
-			System.out.print(i + " ");
+			System.out.print("\nTape alphabet P: ");
+			for (String i : getTapeAlphabet().getElements())
+				System.out.print(i + " ");
 
-		System.out.println();
+			System.out.println("\nInitial state s: " + getInitialState().getId());
 
-		System.out.print("Tape alphabet P: ");
-		for (String i : getTapeAlphabet().getElements())
-			System.out.print(i + " ");
+			System.out.println("White symbol b: " + getWhite());
 
-		System.out.println();
+			System.out.print("Accepted states F: ");
+			for (State i : getAcceptedStates())
+				System.out.print(i.getId() + " ");
 
-		System.out.println("Initial state s: " + getInitialState().getId());
-
-		System.out.println("White symbol b: " + getWhite());
-
-		System.out.print("Accepted states F: ");
-		for (State i : getAcceptedStates())
-			System.out.print(i.getId() + " ");
-
-		System.out.println();
-
-		System.out.println("Transitions d: ");
-		for (Transition i : getSetOfTransitions())
-			System.out.println(i.toString());
+			System.out.println("\nTransitions d: ");
+			for (Transition i : getSetOfTransitions())
+				System.out.println(i.toString());
+			
+		} catch (Exception error) {
+			System.out.println("Error: unable to write Turing machine.");
+		}
 	}
 
 	/** Getters and Setters **/

@@ -17,10 +17,10 @@ public class Transition {
 	private State nextState;
 
 	/** The entry symbol. */
-	private String entrySymbol;
+	private String readSymbol;
 
 	/** The output symbol. */
-	private String outputSymbol;
+	private String writeSymbol;
 
 	/** The move. */
 	private String move;
@@ -34,12 +34,12 @@ public class Transition {
 	 * @param outputSymbol the output symbol
 	 * @param move the move
 	 */
-	public Transition(State currentState, String entrySymbol, State nextState, String outputSymbol, String move) {
+	public Transition(State currentState, String readSymbol, State nextState, String writeSymbol, String move) {
 		super();
 		this.currentState = currentState;
 		this.nextState = nextState;
-		this.entrySymbol = entrySymbol;
-		this.outputSymbol = outputSymbol;
+		this.readSymbol = readSymbol;
+		this.writeSymbol = writeSymbol;
 		this.move = move;
 	}
 
@@ -50,7 +50,7 @@ public class Transition {
 	 */
 	@Override
 	public String toString() {
-		return currentState.getId() + " " + entrySymbol + " " + nextState.getId() + " " + outputSymbol + " " + move;
+		return currentState.getId() + " " + readSymbol + " " + nextState.getId() + " " + writeSymbol + " " + move;
 	}
 
 	/** Getters and Setters **/
@@ -71,20 +71,20 @@ public class Transition {
 		this.nextState = nextState;
 	}
 
-	public String getEntrySymbol() {
-		return entrySymbol;
+	public String getReadSymbol() {
+		return readSymbol;
 	}
 
-	public void setEntrySymbol(String entrySymbol) {
-		this.entrySymbol = entrySymbol;
+	public void setReadSymbol(String readSymbol) {
+		this.readSymbol = readSymbol;
 	}
 
-	public String getOutputSymbol() {
-		return outputSymbol;
+	public String getWriteSymbol() {
+		return writeSymbol;
 	}
 
-	public void setOutputSymbol(String outputSymbol) {
-		this.outputSymbol = outputSymbol;
+	public void setWriteSymbol(String writeSymbol) {
+		this.writeSymbol = writeSymbol;
 	}
 
 	public String getMove() {

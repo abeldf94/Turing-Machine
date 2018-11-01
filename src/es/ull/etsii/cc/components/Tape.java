@@ -49,6 +49,8 @@ public class Tape {
 
 		// it add the white symbol at the begin and the end.
 		tape.add(0, white);
+		tape.add(0, white);
+		tape.add(tape.size(), white);
 		tape.add(tape.size(), white);
 
 		if (!input.isEmpty())
