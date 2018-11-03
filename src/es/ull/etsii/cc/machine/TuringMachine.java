@@ -80,8 +80,6 @@ public class TuringMachine {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void computeInput() throws IOException {
-		//TODO: test algorithm with more inputs and with different machines
-		//TODO: test that write tape function is correctly working when head is in borders
 		
 		// It won't comput if there is no input.
 		if (inputTape == null || inputTape.getInput().isEmpty()) {
@@ -101,12 +99,16 @@ public class TuringMachine {
 		
 		printTapeStatus(globalIteration, head);
 		
+		String symbol = tape.get(head);
+		
 		// Keep loop until the current move is 'stop' 
-		//or the current state is not an accepted state
-		while(!acceptedStates.contains(currentState) && !move.equals(STOP)) {			
+		// or the current state hasn't more transitions
+		while(hasTransitions(currentState, symbol) && !move.equals(STOP)) {			
 			
 			// Current symbol
-			String symbol = tape.get(head);
+			if (!symbol.equals(tape.get(head)))
+				symbol = tape.get(head);
+			
 			// Check if there are transitions for this state and this symbol
 			Transition next = findTransition(currentState, symbol);
 			
@@ -148,10 +150,11 @@ public class TuringMachine {
 				String userInput = "";
 				do {
 					userInput = reader.readLine();
-					if (!userInput.equals("continue") || !userInput.equals("stop"))
+					System.out.println(userInput);
+					if (!userInput.equals("continue") && !userInput.equals("stop"))
 						System.out.print("Error: bad option.\nPlease follow the instructions and try again: ");
 					
-				} while (!userInput.equals("continue") || !userInput.equals("stop"));
+				} while (!userInput.equals("continue") && !userInput.equals("stop"));
 				
 				if (userInput.equals("continue"))
 					iteration = 0;
@@ -170,6 +173,21 @@ public class TuringMachine {
 			System.out.println("Input is accepted.");
 		else
 			System.out.println("Input is not accepted.");
+	}
+	
+	/**
+	 * Checks if there are transitions available.
+	 *
+	 * @param currentState the current state
+	 * @param symbol the symbol
+	 * @return the boolean
+	 */
+	public Boolean hasTransitions(State currentState, String symbol) {
+		for (Transition i : setOfTransitions)
+			if (i.getReadSymbol().equals(symbol) && i.getCurrentState().equals(currentState))
+				return true;
+		
+		return false;
 	}
 	
 	/**
@@ -197,26 +215,13 @@ public class TuringMachine {
 		List<String> tape = inputTape.getInput();
 		
 		System.out.println("Iteration: " + global);
-		String list = "";
-		for (int i = 0; i < tape.size(); i++) {
-			if (i == tape.size() - 1) // If it's last position
-				list += tape.get(i) + " ";
-			else
-				list += tape.get(i) + " | ";
-		}
-		System.out.println(list);
+		String list = "... | ";
+		for (int i = head; i < tape.size(); i++) 
+			list += tape.get(i) + " | ";
 		
-		String writeHead = "";
-		for (int i = 0; i < tape.size(); i++) {
-			if (i == head)
-				writeHead += "^";
-			else if (i == 0)
-				writeHead += "    ";
-			else
-				writeHead += "    ";
-		}
-		System.out.println(writeHead);
-		System.out.println(head);
+		list += " ...";
+		System.out.println(list);
+		System.out.println("      ^");
 	}
 
 	/**

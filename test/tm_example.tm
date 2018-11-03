@@ -1,4 +1,4 @@
-# Ejemplo de una MT
+# TM example
 q0 q1 q2
 0 1
 0 1 .

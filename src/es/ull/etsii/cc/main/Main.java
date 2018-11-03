@@ -54,6 +54,11 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		try {
+			if (args.length != 1)
+				throw new IllegalArgumentException("Invalid parameters. \nUsage:  java -jar TMSimulator.jar [file]");
+			else if (!args[0].endsWith(".tm"))
+				throw new IllegalArgumentException("Error: the file must ends with .tm");
+			
 			TuringMachine machine = new TuringMachine();
 			TMFileLoader loader = new TMFileLoader(machine, new File(args[0]));
 			loader.read();
@@ -91,6 +96,8 @@ public class Main {
 				else if (option != -1)
 					System.out.println("Warning: insert a valid option.");
 			}
+		} catch (IllegalArgumentException error){
+			System.err.println(error.getMessage());		
 		} catch (Exception error) {
 			System.err.println(error.getMessage());
 			error.printStackTrace();
